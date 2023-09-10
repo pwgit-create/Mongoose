@@ -1,10 +1,11 @@
 package pn.mongoose;
 
+import pn.mongoose.applications.CredentialHarvester;
 import pn.mongoose.applications.NodeJsFuzzer;
 import pn.mongoose.applications.SipNullByte;
 import pn.mongoose.constant.ConstantStrings;
 
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -13,12 +14,14 @@ public class Menu {
 
 
     public Menu() {
+        scanner = new Scanner(System.in);
+        nestedScanner = new Scanner(System.in);
     }
 
     private ThreadPoolExecutor executor =
             (ThreadPoolExecutor) Executors.newCachedThreadPool();
-
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
+   private Scanner nestedScanner = new Scanner(System.in);
 
     public void printMenu() throws InterruptedException {
 
@@ -35,6 +38,11 @@ public class Menu {
                 case "2":
                     executeApplication(2);
                     break;
+                case "3":
+                    System.out.println("not yet implemented");
+                    break;
+                case "4":
+                    executeApplication(4);
                 default:
                     invalidOption();
             }
@@ -91,8 +99,8 @@ public class Menu {
             final NodeJsFuzzer fuzzer = new NodeJsFuzzer(argList);
             executor.execute(fuzzer);
 
-            Scanner scanner2 = new Scanner(System.in);
-            scanner2.nextLine();
+
+            nestedScanner.nextLine();
             executor.shutdownNow();
             while (!executor.isShutdown()) {
             }
@@ -101,6 +109,54 @@ public class Menu {
 
             System.out.println("Fuzzing ended :)");
 
+
+        } else if (inputNumber == 4) {
+
+            boolean areAllChildPathsSet = false;
+            String addMoreChildPathInputFromUser = "";
+
+            // The arg list is left un initialized until all the child paths are set
+            String[] argList;
+            // The initial list is set with a placeholder length of 1000
+            String[] initialList = new String[1000];
+            System.out.println("Enter the URL of the target");
+            initialList[0] = scanner.nextLine();
+            // Default child paths
+            initialList[1] = "/index.html";
+            initialList[2] = "/index.php";
+
+
+            int counter = 3;
+            while (!areAllChildPathsSet) {
+
+                System.out.println("Do you wish to add more child paths? (y/n)");
+                addMoreChildPathInputFromUser = scanner.nextLine();
+
+                if (addMoreChildPathInputFromUser.equalsIgnoreCase("y")) {
+                    System.out.println("OK , add a new child path");
+
+                    initialList[counter] = scanner.nextLine();
+                    counter++;
+                } else {
+                    System.out.println("All child paths are set");
+                    areAllChildPathsSet = true;
+                }
+            }
+
+            List<String> list = new ArrayList<String>(Arrays.asList(initialList));
+            list.removeIf(Objects::isNull);
+            argList = list.toArray(new String[list.size()]);
+
+            System.out.println("Click on any keystroke to end the credential harvesting");
+            System.out.printf("Starting credential harvesting against target at: %s ...", argList[0]);
+            final CredentialHarvester credentialHarvester = new CredentialHarvester(argList);
+            executor.execute(credentialHarvester);
+
+            nestedScanner.nextLine();
+            executor.shutdownNow();
+            while (!executor.isShutdown()) {
+            }
+            executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
         }
     }
