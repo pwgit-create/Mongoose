@@ -1,8 +1,6 @@
 package pn.mongoose;
 
-import pn.mongoose.applications.CredentialHarvester;
-import pn.mongoose.applications.NodeJsFuzzer;
-import pn.mongoose.applications.SipNullByte;
+import pn.mongoose.applications.*;
 import pn.mongoose.constant.ConstantStrings;
 
 import java.util.*;
@@ -21,9 +19,9 @@ public class Menu {
     private ThreadPoolExecutor executor =
             (ThreadPoolExecutor) Executors.newCachedThreadPool();
     private final Scanner scanner;
-   private Scanner nestedScanner = new Scanner(System.in);
+    private final Scanner nestedScanner;
 
-    public void printMenu() throws InterruptedException {
+    public void printMenu() {
 
         String input = "";
         while (!input.equals("exit")) {
@@ -39,10 +37,13 @@ public class Menu {
                     executeApplication(2);
                     break;
                 case "3":
-                    System.out.println("not yet implemented");
+                    executeApplication(3);
                     break;
                 case "4":
                     executeApplication(4);
+                    break;
+                case "5":
+                    executeApplication(5);
                 default:
                     invalidOption();
             }
@@ -59,7 +60,7 @@ public class Menu {
 
     }
 
-    private void executeApplication(int inputNumber) throws InterruptedException {
+    private void executeApplication(int inputNumber) {
 
 
         if (inputNumber == 1) {
@@ -103,6 +104,7 @@ public class Menu {
             nestedScanner.nextLine();
             executor.shutdownNow();
             while (!executor.isShutdown()) {
+                System.out.println();
             }
             executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
@@ -110,10 +112,46 @@ public class Menu {
             System.out.println("Fuzzing ended :)");
 
 
+        } else if (inputNumber == 3) {
+
+            System.out.println("""
+                    Instructions of fire walking
+                    ----------------------------
+                    1. Do a traceroute at your intended target and see where you get burnt
+                    2. Add the burnt target (often a firewall) and run the firewalk port scan again
+                    3. Repeat until you reach your target :)""");
+
+            String[] argList = new String[3];
+            System.out.println("Enter the host IP");
+            argList[0] = scanner.nextLine();
+            System.out.println("Enter the start port");
+            argList[1] = scanner.nextLine();
+            System.out.println("Enter the end port");
+            argList[2] = scanner.nextLine();
+
+
+            System.out.printf("Starting firewalking  at: %s ...", argList[0]);
+
+
+            final Firewalk fireWalker = new Firewalk(argList);
+            executor.execute(fireWalker);
+
+
+            nestedScanner.nextLine();
+            executor.shutdownNow();
+            while (!executor.isShutdown()) {
+                System.out.println();
+            }
+            executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+
+
+            System.out.println("Firewalking ended :)");
+
+
         } else if (inputNumber == 4) {
 
             boolean areAllChildPathsSet = false;
-            String addMoreChildPathInputFromUser = "";
+            String addMoreChildPathInputFromUser;
 
             // The arg list is left un initialized until all the child paths are set
             String[] argList;
@@ -143,7 +181,7 @@ public class Menu {
                 }
             }
 
-            List<String> list = new ArrayList<String>(Arrays.asList(initialList));
+            List<String> list = new ArrayList<>(Arrays.asList(initialList));
             list.removeIf(Objects::isNull);
             argList = list.toArray(new String[list.size()]);
 
@@ -155,8 +193,39 @@ public class Menu {
             nestedScanner.nextLine();
             executor.shutdownNow();
             while (!executor.isShutdown()) {
+                System.out.println();
+
             }
             executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+
+        } else if (inputNumber == 5) {
+
+            String[] argList = new String[2];
+            System.out.println("Enter the remote url path for an image");
+            argList[0] = scanner.nextLine();
+            System.out.println("Enter the absolute path of a local image");
+            argList[1] = scanner.nextLine();
+            System.out.println();
+
+
+            System.out.printf("Starting experimental picture changer (under construction) for remote url: %s\n" +
+                    "and local file path of: %s", argList[1], argList[1]);
+
+
+            final ChangePicture changePicture = new ChangePicture(argList);
+            executor.execute(changePicture);
+
+
+            nestedScanner.nextLine();
+            executor.shutdownNow();
+            while (!executor.isShutdown()) {
+                System.out.println();
+
+            }
+            executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+
+
+            System.out.println("Experimental picture changer ended!");
 
         }
     }

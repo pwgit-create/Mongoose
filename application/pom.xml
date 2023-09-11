@@ -4,14 +4,59 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>pn.mongoose</groupId>
     <artifactId>Mongoose</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>Red-Team 0.5</version>
+
+    <description>Red Team app with a small amount of useful tools for ethical hackers</description>
+    <inceptionYear>2023</inceptionYear>
+
+    <developers>
+        <developer>
+            <name>Peter Westin</name>
+            <id>Peter</id>
+            <email>snow_900@outlook.com</email>
+            <roles>
+                <role>Cyber Security Technician</role>
+                <role>ECC-Member (expires 2026)</role>
+                <role>System Developer</role>
+            </roles>
+            <timezone>Central European Time</timezone>
+        </developer>
+    </developers>
+
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
         <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>pn.mongoose.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

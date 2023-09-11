@@ -2,7 +2,7 @@ package pn.mongoose.applications;
 
 import pn.mongoose.applications.base.ApplicationBase;
 
-import java.io.IOException;
+
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -18,13 +18,11 @@ public class SipNullByte extends ApplicationBase {
 
         int port;
 
-        if (args[1] == "DEFAULT"){
+        if (args[1].equalsIgnoreCase("DEFAULT")) {
             port = 5060;
-        }
+        } else {
 
-        else{
-
-            port= Integer.parseInt(args[1]);
+            port = Integer.parseInt(args[1]);
         }
 
         Socket socket = new Socket();

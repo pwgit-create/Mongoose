@@ -13,14 +13,14 @@ public class CredentialHarvester extends ApplicationBase {
         super(args);
     }
 
-    private  Map<String, String> harvestCredentials(URL url, List<String> childPaths) throws MalformedURLException {
-        Map<String, String> harvestedCredentials = new HashMap<String, String>();
+    private Map<String, String> harvestCredentials(URL url, List<String> childPaths) throws MalformedURLException {
+        Map<String, String> harvestedCredentials = new HashMap<>();
 
         // Iterate through the list of child paths
         for (String childPath : childPaths) {
 
             URL target = new URL(url, childPath);
-            System.out.printf("Scanning : %s\n",childPath);
+            System.out.printf("Scanning : %s\n", childPath);
             try {
                 // Try to connect to the URL, and if the connection is successful, fetch the credentials
                 HttpURLConnection connection = (HttpURLConnection) target.openConnection();
@@ -37,19 +37,19 @@ public class CredentialHarvester extends ApplicationBase {
                                 // Store key-values in the map
                                 harvestedCredentials.put(inputArray[0], inputArray[1]);
                                 System.out.println();
-                                if(inputArray[0].equalsIgnoreCase("password") || inputArray[0].equalsIgnoreCase("user"
+                                if (inputArray[0].equalsIgnoreCase("password") || inputArray[0].equalsIgnoreCase("user"
                                 ) || inputArray[0].equalsIgnoreCase("secret") || inputArray[0].equalsIgnoreCase("author")
-                                || inputArray[1].equalsIgnoreCase("password") || inputArray[1].equalsIgnoreCase("user")
-                                || inputArray[1].equalsIgnoreCase("secret") || inputArray[1].equalsIgnoreCase("author")){
-                                    System.out.printf("Credentials found!\n%s : %s",inputArray[0],inputArray[1]);
+                                        || inputArray[1].equalsIgnoreCase("password") || inputArray[1].equalsIgnoreCase("user")
+                                        || inputArray[1].equalsIgnoreCase("secret") || inputArray[1].equalsIgnoreCase("author")) {
+                                    System.out.printf("Credentials found!\n%s : %s", inputArray[0], inputArray[1]);
                                 }
-                                System.out.printf("Key/value pair found!\n%s : %s",inputArray[0],inputArray[1]);
+                                System.out.printf("Key/value pair found!\n%s : %s", inputArray[0], inputArray[1]);
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Connection to " + target.toString() + " failed.");
+                System.out.println("Connection to " + target + " failed.");
             }
         }
 
@@ -59,29 +59,23 @@ public class CredentialHarvester extends ApplicationBase {
     @Override
     protected void RunApplication(String... args) {
 
-        //TODO: Remove the below comments when done
-
-        // args[0] = baseurl
-        // args[1]
         URL url;
 
         List<String> childPaths = new LinkedList<>();
 
         try {
-             url = new URL(args[0]);
+            url = new URL(args[0]);
 
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
 
-       for(int i = 1; i < args.length;i++){
-
-           childPaths.add(args[i]);
-
-       }
+        childPaths.addAll(Arrays.asList(args).subList(1, args.length));
         try {
-           harvestCredentials(url,childPaths);
+            Map<String, String> credentialResult = harvestCredentials(url, childPaths);
 
+            System.out.println();
+            System.out.printf("Credentials run successful: %s", !credentialResult.isEmpty());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
