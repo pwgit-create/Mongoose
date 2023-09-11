@@ -1,7 +1,7 @@
 # Mongoose
+## <b>A red-team application</b>
 
-
-A  red-team application with a console menu.
+![App Screenshot](https://github.com/pwgit-create/Mongoose/blob/master/application/src/main/resources/app_screenshot.png?raw=true)
 
 ### Start Project
 You have the option to either use the JAR provided (in the root of this folder) or construct the project using maven.
@@ -84,7 +84,3 @@ Note that this is the only option that uses IP instead of DNS
 | :-------- | :------- | :------------------------- |
 | `arg[0]` | `string` | **Required**. Remote URL to the path of a picture    |
 | `arg[1]` | `string` | **Required**. Local file path to a image file  |
-
-## Screenshots
-
-![App Screenshot](https://cosmosmagazine.com/wp-content/uploads/2019/12/190620_mongoose_pr.jpg)
